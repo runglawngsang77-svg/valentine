@@ -33,8 +33,7 @@ button {
     transition: all 0.3s ease;
 }
 #yesBtn { background: #ff4d6d; color: white; }
-#noBtn { background: #ccc; }
-.bigYes { background: #ff4d6d; color: white; font-size: 28px; padding: 25px 50px; transform: scale(1.5); }
+#noBtn { background: #ccc; position: relative; }
 </style>
 </head>
 <body>
@@ -49,9 +48,9 @@ button {
 const yesBtn = document.getElementById('yesBtn');
 const noBtn = document.getElementById('noBtn');
 
-let circleAnimId;
-let angle = 0;
-const radius = 150;
+let angle = 0;            // starting angle for rotation
+let radius = 150;         // radius of circular motion
+let animating = false;    // flag to prevent multiple animations
 
 // Yes button click
 yesBtn.addEventListener('click', () => {
@@ -68,7 +67,11 @@ yesBtn.addEventListener('click', () => {
 // No button click
 noBtn.addEventListener('click', () => {
     noBtn.innerText = "Click me to row your boat 360 😏";
-    if (!circleAnimId) startCircularMotion();
+
+    if (!animating) {
+        animating = true;
+        startCircularMotion();
+    }
 });
 
 function startCircularMotion() {
@@ -86,10 +89,10 @@ function startCircularMotion() {
         noBtn.style.left = `${x}px`;
         noBtn.style.top = `${y}px`;
 
-        circleAnimId = requestAnimationFrame(animate);
+        requestAnimationFrame(animate);
     }
 
-    animate();
+    requestAnimationFrame(animate);
 }
 </script>
 
