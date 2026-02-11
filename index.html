@@ -56,9 +56,10 @@ button {
 #noBtn {
     background: #ccc;
     color: #333;
+    position: relative; /* initial relative, will become fixed when moving */
 }
 
-/* Floating hearts & confetti */
+/* Floating hearts & sparkles */
 .floating {
     position: fixed;
     font-size: 25px;
@@ -74,7 +75,7 @@ button {
 <body>
 
 <div class="card">
-    <h1>Will You Be My Valentine? 💖</h1>
+    <h1>Will You Be My Valentine My Dawt Dawt My Cutie Patootie? 💖</h1>
     <button id="yesBtn">Yes 💘</button>
     <button id="noBtn">No 🙈</button>
 </div>
@@ -85,7 +86,7 @@ const noBtn = document.getElementById('noBtn');
 let angle = 0;
 let animating = false;
 
-// Generate floating hearts continuously
+// Floating hearts continuously
 setInterval(() => {
     const heart = document.createElement('div');
     heart.className = 'floating';
@@ -100,7 +101,7 @@ setInterval(() => {
 yesBtn.addEventListener('click', () => {
     document.body.innerHTML = `
         <div style="position:relative;width:100vw;height:100vh;background:#ffb6c1;overflow:hidden;">
-            <h1 style="text-align:center;margin-top:40vh;font-size:3em;color:#ff1a75;">She Said YESSSS 💖🥰</h1>
+            <h1 style="text-align:center;margin-top:40vh;font-size:3em;color:#ff1a75;">YAYYY SHE SAID YES KAN DAWT TUK KA DODO 💖🥰</h1>
         </div>
     `;
     // Big heart confetti
@@ -115,9 +116,9 @@ yesBtn.addEventListener('click', () => {
     }, 100);
 });
 
-// No button click → start big circular motion
+// No button click → start circular motion
 noBtn.addEventListener('click', () => {
-    noBtn.innerText = "Click me to row your boat 360 😏";
+    noBtn.innerText = "ROW YOUR BOAT 360 DEGREES😏";
     if (!animating) {
         animating = true;
         noBtn.style.position = 'fixed';
@@ -126,12 +127,14 @@ noBtn.addEventListener('click', () => {
     }
 });
 
-// Circular motion
+// Circular motion that stays inside viewport
 function startCircularMotion() {
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
-    const radiusX = window.innerWidth / 2 - 80;
-    const radiusY = window.innerHeight / 2 - 80;
+
+    // Reduce radius by button size + margin to stay fully inside
+    const radiusX = (window.innerWidth / 2) - (noBtn.offsetWidth / 2) - 20;
+    const radiusY = (window.innerHeight / 2) - (noBtn.offsetHeight / 2) - 20;
 
     function animate() {
         angle += 0.02;
@@ -139,7 +142,7 @@ function startCircularMotion() {
         const y = centerY + radiusY * Math.sin(angle) - noBtn.offsetHeight / 2;
         noBtn.style.left = `${x}px`;
         noBtn.style.top = `${y}px`;
-        noBtn.style.transform = `rotate(${angle*50}deg)`; // spinning effect
+        noBtn.style.transform = `rotate(${angle * 50}deg)`; // spinning effect
         requestAnimationFrame(animate);
     }
     requestAnimationFrame(animate);
