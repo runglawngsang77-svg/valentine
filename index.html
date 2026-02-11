@@ -86,19 +86,23 @@ button {
 <body>
 
 <div class="card">
-    <h1>Will You Be My Valentine My Dawt Dawt My Cutie Patootie? 💖</h1>
-    <button id="yesBtn" onclick="sayYes()">Yes 💘</button>
-    <button id="noBtn" onclick="handleNo()">No 🙈</button>
+    <h1>Will You Be My Valentine? 💖</h1>
+    <button id="yesBtn">Yes 💘</button>
+    <button id="noBtn">No 🙈</button>
 </div>
 
 <audio id="loveMusic" src="https://www.soundjay.com/buttons/sounds/button-09.mp3"></audio>
 
 <script>
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
 let noClicks = 0;
 
+// Add event listeners
+noBtn.addEventListener("click", handleNo);
+yesBtn.addEventListener("click", sayYes);
+
 function handleNo() {
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
     noClicks++;
 
     // Change text
@@ -131,7 +135,8 @@ function handleNo() {
         noBtn.innerText = "YES 💘";
         noBtn.className = "bigYes";
         noBtn.style.position = "static";
-        noBtn.onclick = sayYes;
+        noBtn.removeEventListener("click", handleNo);
+        noBtn.addEventListener("click", sayYes);
     }
 }
 
@@ -141,12 +146,11 @@ function sayYes() {
     document.body.innerHTML = `
         <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:linear-gradient(135deg,#ff9a9e,#fad0c4);font-family:Arial;text-align:center;overflow:hidden;">
             <div>
-                <h1 style="color:#ff4d6d;font-size:42px;">SHE SAID YESSSS 💖🥰</h1>
+                <h1 style="color:#ff4d6d;font-size:42px;">She Said YESSSS 💖🥰</h1>
                 <p style="font-size:22px;">Best day ever 😌💘</p>
             </div>
         </div>
     `;
-
     setInterval(makeHeart, 200);
     setInterval(makeConfetti, 150);
 }
