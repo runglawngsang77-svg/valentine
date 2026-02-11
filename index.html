@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Will You Be My Valentine? 💖</title>
+<title>Be My Valentine 💖</title>
 
 <style>
 body {
@@ -15,13 +15,13 @@ body {
     align-items: center;
     font-family: Arial, sans-serif;
     overflow: hidden;
-    text-align: center;
 }
 
-.container {
+.card {
     background: white;
-    padding: 40px;
+    padding: 50px;
     border-radius: 20px;
+    text-align: center;
     box-shadow: 0 15px 40px rgba(0,0,0,0.2);
 }
 
@@ -31,39 +31,47 @@ h1 {
 }
 
 button {
-    padding: 12px 25px;
+    padding: 14px 28px;
     font-size: 18px;
     border: none;
     border-radius: 30px;
     cursor: pointer;
     margin: 10px;
-    transition: 0.2s;
+    transition: all 0.3s ease;
 }
 
-#yesBtn {
+.yes {
     background: #ff4d6d;
     color: white;
 }
 
-.noBtn {
+.no {
     background: #ccc;
 }
 
-.bigYes {
+.big {
     background: #ff4d6d;
     color: white;
-    font-size: 26px;
-    padding: 20px 40px;
-    transform: scale(1.5);
+    font-size: 28px;
+    padding: 25px 50px;
+    transform: scale(1.4);
+}
+
+.fade {
+    animation: fadeOut 0.3s forwards;
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; transform: scale(0.5); }
 }
 
 .heart {
     position: fixed;
     font-size: 20px;
-    animation: float 4s linear forwards;
+    animation: floatUp 4s linear forwards;
 }
 
-@keyframes float {
+@keyframes floatUp {
     0% { transform: translateY(0); opacity: 1; }
     100% { transform: translateY(-100vh); opacity: 0; }
 }
@@ -72,92 +80,59 @@ button {
 
 <body>
 
-<div class="container">
+<div class="card">
     <h1>Will You Be My Valentine? 💖</h1>
-    <button id="yesBtn" onclick="sayYes()">Yes 💘</button>
-    <button class="noBtn" onclick="handleNo(this)">No 🙈</button>
+    <button class="yes" onclick="sayYes()">Yes 💘</button>
+    <button id="mainNo" class="no">No 🙈</button>
 </div>
 
 <script>
-let noClickCount = 0;
+let stage = 0;
 
-function handleNo(button) {
+const mainNo = document.getElementById("mainNo");
+mainNo.addEventListener("click", handleNo);
 
-    // First click → spawn 5 fake No buttons
-    if (noClickCount === 0) {
+function handleNo(e) {
+
+    // Stage 0 → spawn 5 fake No buttons
+    if (stage === 0) {
         for (let i = 0; i < 5; i++) {
-            let fake = document.createElement("button");
+            const fake = document.createElement("button");
             fake.innerText = "No 🙈";
-            fake.className = "noBtn";
-            fake.onclick = function() { handleNo(fake); };
-
-            document.body.appendChild(fake);
-
+            fake.className = "no";
             fake.style.position = "fixed";
-            fake.style.left = Math.random() * window.innerWidth + "px";
-            fake.style.top = Math.random() * window.innerHeight + "px";
+            fake.style.left = Math.random() * (window.innerWidth - 100) + "px";
+            fake.style.top = Math.random() * (window.innerHeight - 50) + "px";
+            fake.addEventListener("click", handleNo);
+            document.body.appendChild(fake);
         }
-    }
-
-    noClickCount++;
-
-    // After 2 clicks → remove all No buttons except this one
-    if (noClickCount === 2) {
-        let allNoButtons = document.querySelectorAll(".noBtn");
-        allNoButtons.forEach(btn => {
-            if (btn !== button) {
-                btn.remove();
-            }
-        });
-    }
-
-    // After 3rd click → turn last No into BIG Yes
-    if (noClickCount >= 3) {
-        button.innerText = "YES 💘";
-        button.className = "bigYes";
-        button.onclick = sayYes;
-        button.style.position = "static";
+        stage++;
         return;
     }
 
-    // Change text
-    button.innerText = "Are you sure? 😢";
+    // Stage 1 → remove all No buttons except clicked one
+    if (stage === 1) {
+        document.querySelectorAll(".no").forEach(btn => {
+            if (btn !== e.target) {
+                btn.classList.add("fade");
+                setTimeout(() => btn.remove(), 300);
+            }
+        });
 
-    // Shrink
-    let scale = 1 - (noClickCount * 0.1);
-    if (scale < 0.4) scale = 0.4;
-    button.style.transform = `scale(${scale})`;
+        e.target.style.position = "static";
+        stage++;
+        return;
+    }
 
-    // Teleport
-    button.style.position = "fixed";
-    button.style.left = Math.random() * (window.innerWidth - button.offsetWidth) + "px";
-    button.style.top = Math.random() * (window.innerHeight - button.offsetHeight) + "px";
+    // Stage 2 → transform last No into giant Yes
+    if (stage === 2) {
+        e.target.innerText = "YES 💘";
+        e.target.className = "big";
+        e.target.onclick = sayYes;
+        stage++;
+    }
 }
 
 function sayYes() {
     document.body.innerHTML = `
-        <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:linear-gradient(135deg,#ff9a9e,#fad0c4);text-align:center;font-family:Arial;">
-            <div>
-                <h1 style="color:#ff4d6d;font-size:40px;">SHE SAID YESSSS 💖🥰</h1>
-                <p style="font-size:22px;">Best girlfriend ever 😌💘</p>
-            </div>
-        </div>
-    `;
-
-    setInterval(createHeart, 300);
-}
-
-function createHeart() {
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "💖";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.bottom = "0px";
-    document.body.appendChild(heart);
-
-    setTimeout(() => heart.remove(), 4000);
-}
-</script>
-
-</body>
-</html>
+        <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:linear-gradie
