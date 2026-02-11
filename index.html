@@ -33,7 +33,7 @@ button {
     transition: all 0.3s ease;
 }
 #yesBtn { background: #ff4d6d; color: white; }
-#noBtn { background: #ccc; position: relative; }
+#noBtn { background: #ccc; }
 </style>
 </head>
 <body>
@@ -48,11 +48,11 @@ button {
 const yesBtn = document.getElementById('yesBtn');
 const noBtn = document.getElementById('noBtn');
 
-let angle = 0;            // starting angle for rotation
-let radius = 150;         // radius of circular motion
-let animating = false;    // flag to prevent multiple animations
+let angle = 0;
+let radius = 150;
+let animating = false;
 
-// Yes button click
+// Yes button
 yesBtn.addEventListener('click', () => {
     document.body.innerHTML = `
         <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:linear-gradient(135deg,#ff9a9e,#fad0c4);font-family:Arial;text-align:center;">
@@ -70,6 +70,12 @@ noBtn.addEventListener('click', () => {
 
     if (!animating) {
         animating = true;
+
+        // Move button to body so it can float freely
+        document.body.appendChild(noBtn);
+        noBtn.style.position = 'fixed';
+        noBtn.style.zIndex = 999;
+
         startCircularMotion();
     }
 });
@@ -78,11 +84,8 @@ function startCircularMotion() {
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
 
-    noBtn.style.position = 'fixed';
-    noBtn.style.zIndex = 999;
-
     function animate() {
-        angle += 0.05; // speed of rotation
+        angle += 0.05; // rotation speed
         const x = centerX + radius * Math.cos(angle) - noBtn.offsetWidth / 2;
         const y = centerY + radius * Math.sin(angle) - noBtn.offsetHeight / 2;
 
