@@ -5,46 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valentine Proposal 💖</title>
 <style>
-/* Fullscreen background with animated gradient */
 body {
     margin: 0;
     height: 100vh;
-    font-family: 'Arial', sans-serif;
+    font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
+    background: #ffb6c1;
     overflow: hidden;
 }
-@keyframes gradientBG {
-    0% {background-position:0% 50%;}
-    50% {background-position:100% 50%;}
-    100% {background-position:0% 50%;}
-}
 
-/* Card with glow */
+/* Card */
 .card {
-    background: rgba(255,255,255,0.9);
+    background: rgba(255,255,255,0.95);
     padding: 50px;
     border-radius: 25px;
     text-align: center;
-    box-shadow: 0 0 40px rgba(255,77,109,0.6);
-    backdrop-filter: blur(10px);
-    animation: pulseCard 2s infinite alternate;
+    box-shadow: 0 0 50px rgba(255,77,109,0.8);
+    animation: cardPulse 2s infinite alternate;
 }
-@keyframes pulseCard {
-    0% { box-shadow: 0 0 30px rgba(255,77,109,0.4); }
-    100% { box-shadow: 0 0 60px rgba(255,77,109,0.8); }
+@keyframes cardPulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
 }
 
 /* Text */
-h1 {
-    color: #ff4d6d;
-    margin-bottom: 30px;
-    font-size: 2em;
-}
+h1 { color: #ff1a75; margin-bottom: 30px; font-size: 2em; }
 
 /* Buttons */
 button {
@@ -55,34 +42,26 @@ button {
     cursor: pointer;
     margin: 10px;
     transition: all 0.3s ease;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 #yesBtn {
-    background: linear-gradient(45deg, #ff4d6d, #ff85a2);
+    background: #ff1a75;
     color: white;
-    animation: glowBtn 2s infinite alternate;
+    box-shadow: 0 0 30px #ff4da6;
+    animation: yesGlow 1s infinite alternate;
 }
-#yesBtn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 40px rgba(255,77,109,0.8);
+@keyframes yesGlow {
+    0% { box-shadow: 0 0 20px #ff4da6; transform: scale(1); }
+    100% { box-shadow: 0 0 50px #ff4da6; transform: scale(1.1); }
 }
 #noBtn {
-    background: linear-gradient(45deg, #ccc, #eee);
+    background: #ccc;
     color: #333;
 }
-#noBtn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 25px rgba(0,0,0,0.3);
-}
-@keyframes glowBtn {
-    0% { box-shadow: 0 0 20px rgba(255,77,109,0.5); }
-    100% { box-shadow: 0 0 50px rgba(255,77,109,1); }
-}
 
-/* Floating hearts and sparkles */
+/* Floating hearts & confetti */
 .floating {
     position: fixed;
-    font-size: 20px;
+    font-size: 25px;
     animation: floatUp 5s linear forwards;
     pointer-events: none;
 }
@@ -95,7 +74,7 @@ button {
 <body>
 
 <div class="card">
-    <h1 id="question">Will You Be My Valentine? 💖</h1>
+    <h1>Will You Be My Valentine? 💖</h1>
     <button id="yesBtn">Yes 💘</button>
     <button id="noBtn">No 🙈</button>
 </div>
@@ -106,35 +85,41 @@ const noBtn = document.getElementById('noBtn');
 let angle = 0;
 let animating = false;
 
-// Generate floating hearts constantly
+// Generate floating hearts continuously
 setInterval(() => {
     const heart = document.createElement('div');
     heart.className = 'floating';
     heart.innerText = Math.random() > 0.5 ? '💖' : '✨';
     heart.style.left = Math.random() * window.innerWidth + 'px';
-    heart.style.fontSize = (15 + Math.random() * 25) + 'px';
+    heart.style.fontSize = (20 + Math.random() * 30) + 'px';
     document.body.appendChild(heart);
     setTimeout(() => heart.remove(), 5000);
-}, 300);
+}, 200);
 
-// Yes button click
+// Yes button click → full-screen hearts & confetti
 yesBtn.addEventListener('click', () => {
     document.body.innerHTML = `
-        <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:linear-gradient(-45deg,#ff9a9e,#fad0c4,#fbc2eb,#a18cd1);background-size:400%400%;animation:gradientBG 15s ease infinite;font-family:Arial;text-align:center;overflow:hidden;">
-            <div>
-                <h1 style="color:#ff4d6d;font-size:42px;">She Said YESSSS 💖🥰</h1>
-                <p style="font-size:22px;">Best day ever 😌💘</p>
-            </div>
+        <div style="position:relative;width:100vw;height:100vh;background:#ffb6c1;overflow:hidden;">
+            <h1 style="text-align:center;margin-top:40vh;font-size:3em;color:#ff1a75;">She Said YESSSS 💖🥰</h1>
         </div>
     `;
+    // Big heart confetti
+    setInterval(() => {
+        const c = document.createElement('div');
+        c.className = 'floating';
+        c.innerText = Math.random() > 0.5 ? '💖' : '✨';
+        c.style.left = Math.random() * window.innerWidth + 'px';
+        c.style.fontSize = (20 + Math.random() * 50) + 'px';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 5000);
+    }, 100);
 });
 
-// No button click starts circular motion
+// No button click → start big circular motion
 noBtn.addEventListener('click', () => {
     noBtn.innerText = "Click me to row your boat 360 😏";
     if (!animating) {
         animating = true;
-        document.body.appendChild(noBtn);
         noBtn.style.position = 'fixed';
         noBtn.style.zIndex = 999;
         startCircularMotion();
@@ -145,24 +130,21 @@ noBtn.addEventListener('click', () => {
 function startCircularMotion() {
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
-    const radiusX = window.innerWidth / 2 - 60; // nearly full width
-    const radiusY = window.innerHeight / 2 - 60;
+    const radiusX = window.innerWidth / 2 - 80;
+    const radiusY = window.innerHeight / 2 - 80;
 
     function animate() {
         angle += 0.02;
         const x = centerX + radiusX * Math.cos(angle) - noBtn.offsetWidth / 2;
         const y = centerY + radiusY * Math.sin(angle) - noBtn.offsetHeight / 2;
-
         noBtn.style.left = `${x}px`;
         noBtn.style.top = `${y}px`;
-
-        // Slight rotation of button for fun
-        noBtn.style.transform = `rotate(${angle * 30}deg)`;
-
+        noBtn.style.transform = `rotate(${angle*50}deg)`; // spinning effect
         requestAnimationFrame(animate);
     }
     requestAnimationFrame(animate);
 }
 </script>
+
 </body>
 </html>
