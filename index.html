@@ -49,6 +49,14 @@ button {
     background: #ccc;
 }
 
+.bigYes {
+    background: #ff4d6d;
+    color: white;
+    font-size: 26px;
+    padding: 20px 40px;
+    transform: scale(1.5);
+}
+
 .heart {
     position: fixed;
     font-size: 20px;
@@ -75,7 +83,7 @@ let noClickCount = 0;
 
 function handleNo(button) {
 
-    // First click: create 5 fake no buttons
+    // First click → spawn 5 fake No buttons
     if (noClickCount === 0) {
         for (let i = 0; i < 5; i++) {
             let fake = document.createElement("button");
@@ -93,12 +101,31 @@ function handleNo(button) {
 
     noClickCount++;
 
+    // After 2 clicks → remove all No buttons except this one
+    if (noClickCount === 2) {
+        let allNoButtons = document.querySelectorAll(".noBtn");
+        allNoButtons.forEach(btn => {
+            if (btn !== button) {
+                btn.remove();
+            }
+        });
+    }
+
+    // After 3rd click → turn last No into BIG Yes
+    if (noClickCount >= 3) {
+        button.innerText = "YES 💘";
+        button.className = "bigYes";
+        button.onclick = sayYes;
+        button.style.position = "static";
+        return;
+    }
+
     // Change text
     button.innerText = "Are you sure? 😢";
 
     // Shrink
     let scale = 1 - (noClickCount * 0.1);
-    if (scale < 0.3) scale = 0.3;
+    if (scale < 0.4) scale = 0.4;
     button.style.transform = `scale(${scale})`;
 
     // Teleport
