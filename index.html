@@ -1,79 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Will You Be My Valentine? 💖</title>
 
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: 'Arial', sans-serif;
-        overflow: hidden;
-        text-align: center;
-    }
+body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    text-align: center;
+}
 
-    .container {
-        background: white;
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-        position: relative;
-    }
+.container {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
 
-    h1 {
-        color: #ff4d6d;
-        font-size: 28px;
-        margin-bottom: 30px;
-    }
+h1 {
+    color: #ff4d6d;
+    margin-bottom: 30px;
+}
 
-    .buttons {
-        position: relative;
-        height: 120px;
-    }
+button {
+    padding: 12px 25px;
+    font-size: 18px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin: 10px;
+    transition: 0.2s;
+}
 
-    button {
-        padding: 12px 25px;
-        font-size: 18px;
-        border: none;
-        border-radius: 30px;
-        cursor: pointer;
-        transition: 0.2s;
-        position: absolute;
-    }
+#yesBtn {
+    background: #ff4d6d;
+    color: white;
+}
 
-    #yesBtn {
-        background-color: #ff4d6d;
-        color: white;
-        left: 30%;
-    }
+.noBtn {
+    background: #ccc;
+}
 
-    #yesBtn:hover {
-        transform: scale(1.1);
-    }
+.heart {
+    position: fixed;
+    font-size: 20px;
+    animation: float 4s linear forwards;
+}
 
-    #noBtn {
-        background-color: #ccc;
-        color: black;
-        left: 60%;
-    }
-
-    .heart {
-        position: absolute;
-        font-size: 20px;
-        animation: float 4s infinite ease-in;
-    }
-
-    @keyframes float {
-        0% { transform: translateY(0); opacity: 1; }
-        100% { transform: translateY(-100vh); opacity: 0; }
-    }
+@keyframes float {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-100vh); opacity: 0; }
+}
 </style>
 </head>
 
@@ -81,33 +66,53 @@
 
 <div class="container">
     <h1>Will You Be My Valentine? 💖</h1>
-    <div class="buttons">
-        <button id="yesBtn" onclick="sayYes()">Yes 💘</button>
-        <button id="noBtn" onmouseover="moveNo()">No 🙈</button>
-    </div>
+    <button id="yesBtn" onclick="sayYes()">Yes 💘</button>
+    <button class="noBtn" onclick="handleNo(this)">No 🙈</button>
 </div>
 
 <script>
-function moveNo() {
-    const noBtn = document.getElementById("noBtn");
-    const container = document.querySelector(".buttons");
+let noClickCount = 0;
 
-    const maxX = container.clientWidth - noBtn.offsetWidth;
-    const maxY = container.clientHeight - noBtn.offsetHeight;
+function handleNo(button) {
 
-    const randomX = Math.floor(Math.random() * maxX);
-    const randomY = Math.floor(Math.random() * maxY);
+    // First click: create 5 fake no buttons
+    if (noClickCount === 0) {
+        for (let i = 0; i < 5; i++) {
+            let fake = document.createElement("button");
+            fake.innerText = "No 🙈";
+            fake.className = "noBtn";
+            fake.onclick = function() { handleNo(fake); };
 
-    noBtn.style.left = randomX + "px";
-    noBtn.style.top = randomY + "px";
+            document.body.appendChild(fake);
+
+            fake.style.position = "fixed";
+            fake.style.left = Math.random() * window.innerWidth + "px";
+            fake.style.top = Math.random() * window.innerHeight + "px";
+        }
+    }
+
+    noClickCount++;
+
+    // Change text
+    button.innerText = "Are you sure? 😢";
+
+    // Shrink
+    let scale = 1 - (noClickCount * 0.1);
+    if (scale < 0.3) scale = 0.3;
+    button.style.transform = `scale(${scale})`;
+
+    // Teleport
+    button.style.position = "fixed";
+    button.style.left = Math.random() * (window.innerWidth - button.offsetWidth) + "px";
+    button.style.top = Math.random() * (window.innerHeight - button.offsetHeight) + "px";
 }
 
 function sayYes() {
     document.body.innerHTML = `
         <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:linear-gradient(135deg,#ff9a9e,#fad0c4);text-align:center;font-family:Arial;">
             <div>
-                <h1 style="color:#ff4d6d;font-size:40px;">YAYYYYY 💖🥰</h1>
-                <p style="font-size:22px;">Best decision ever 😌💘</p>
+                <h1 style="color:#ff4d6d;font-size:40px;">SHE SAID YESSSS 💖🥰</h1>
+                <p style="font-size:22px;">Best girlfriend ever 😌💘</p>
             </div>
         </div>
     `;
@@ -117,16 +122,13 @@ function sayYes() {
 
 function createHeart() {
     const heart = document.createElement("div");
-    heart.classList.add("heart");
+    heart.className = "heart";
     heart.innerHTML = "💖";
     heart.style.left = Math.random() * 100 + "vw";
     heart.style.bottom = "0px";
-    heart.style.position = "absolute";
     document.body.appendChild(heart);
 
-    setTimeout(() => {
-        heart.remove();
-    }, 4000);
+    setTimeout(() => heart.remove(), 4000);
 }
 </script>
 
