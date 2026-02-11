@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valentine Proposal 💖</title>
 <style>
-/* Body & Background */
+/* Fullscreen background with animated gradient */
 body {
     margin: 0;
     height: 100vh;
@@ -24,17 +24,20 @@ body {
     100% {background-position:0% 50%;}
 }
 
-/* Card */
+/* Card with glow */
 .card {
-    background: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.9);
     padding: 50px;
     border-radius: 25px;
     text-align: center;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
-    backdrop-filter: blur(8px);
-    transition: transform 0.3s;
+    box-shadow: 0 0 40px rgba(255,77,109,0.6);
+    backdrop-filter: blur(10px);
+    animation: pulseCard 2s infinite alternate;
 }
-.card:hover { transform: scale(1.02); }
+@keyframes pulseCard {
+    0% { box-shadow: 0 0 30px rgba(255,77,109,0.4); }
+    100% { box-shadow: 0 0 60px rgba(255,77,109,0.8); }
+}
 
 /* Text */
 h1 {
@@ -54,13 +57,30 @@ button {
     transition: all 0.3s ease;
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
-#yesBtn { background: #ff4d6d; color: white; }
-#yesBtn:hover { transform: scale(1.1); box-shadow: 0 12px 25px rgba(255,77,109,0.5); }
-#noBtn { background: #ccc; }
-#noBtn:hover { transform: scale(1.1); box-shadow: 0 12px 25px rgba(0,0,0,0.3); }
+#yesBtn {
+    background: linear-gradient(45deg, #ff4d6d, #ff85a2);
+    color: white;
+    animation: glowBtn 2s infinite alternate;
+}
+#yesBtn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 40px rgba(255,77,109,0.8);
+}
+#noBtn {
+    background: linear-gradient(45deg, #ccc, #eee);
+    color: #333;
+}
+#noBtn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px rgba(0,0,0,0.3);
+}
+@keyframes glowBtn {
+    0% { box-shadow: 0 0 20px rgba(255,77,109,0.5); }
+    100% { box-shadow: 0 0 50px rgba(255,77,109,1); }
+}
 
-/* Hearts */
-.heart {
+/* Floating hearts and sparkles */
+.floating {
     position: fixed;
     font-size: 20px;
     animation: floatUp 5s linear forwards;
@@ -86,24 +106,32 @@ const noBtn = document.getElementById('noBtn');
 let angle = 0;
 let animating = false;
 
+// Generate floating hearts constantly
+setInterval(() => {
+    const heart = document.createElement('div');
+    heart.className = 'floating';
+    heart.innerText = Math.random() > 0.5 ? '💖' : '✨';
+    heart.style.left = Math.random() * window.innerWidth + 'px';
+    heart.style.fontSize = (15 + Math.random() * 25) + 'px';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 5000);
+}, 300);
+
 // Yes button click
 yesBtn.addEventListener('click', () => {
     document.body.innerHTML = `
-        <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:linear-gradient(-45deg,#ff9a9e,#fad0c4,#fbc2eb,#a18cd1);background-size:400% 400%;animation:gradientBG 15s ease infinite;font-family:Arial;text-align:center;overflow:hidden;">
+        <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:linear-gradient(-45deg,#ff9a9e,#fad0c4,#fbc2eb,#a18cd1);background-size:400%400%;animation:gradientBG 15s ease infinite;font-family:Arial;text-align:center;overflow:hidden;">
             <div>
                 <h1 style="color:#ff4d6d;font-size:42px;">She Said YESSSS 💖🥰</h1>
                 <p style="font-size:22px;">Best day ever 😌💘</p>
             </div>
         </div>
     `;
-    // Start hearts + confetti
-    setInterval(makeHeart, 150);
 });
 
-// No button click
+// No button click starts circular motion
 noBtn.addEventListener('click', () => {
     noBtn.innerText = "Click me to row your boat 360 😏";
-
     if (!animating) {
         animating = true;
         document.body.appendChild(noBtn);
@@ -112,17 +140,6 @@ noBtn.addEventListener('click', () => {
         startCircularMotion();
     }
 });
-
-// Floating hearts function
-function makeHeart() {
-    const heart = document.createElement('div');
-    heart.className = 'heart';
-    heart.innerText = '💖';
-    heart.style.left = Math.random() * window.innerWidth + 'px';
-    heart.style.fontSize = (10 + Math.random() * 20) + 'px';
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 5000);
-}
 
 // Circular motion
 function startCircularMotion() {
@@ -135,8 +152,13 @@ function startCircularMotion() {
         angle += 0.02;
         const x = centerX + radiusX * Math.cos(angle) - noBtn.offsetWidth / 2;
         const y = centerY + radiusY * Math.sin(angle) - noBtn.offsetHeight / 2;
+
         noBtn.style.left = `${x}px`;
         noBtn.style.top = `${y}px`;
+
+        // Slight rotation of button for fun
+        noBtn.style.transform = `rotate(${angle * 30}deg)`;
+
         requestAnimationFrame(animate);
     }
     requestAnimationFrame(animate);
