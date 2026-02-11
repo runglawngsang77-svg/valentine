@@ -80,16 +80,17 @@ noBtn.addEventListener('click', () => {
 });
 
 function startCircularMotion() {
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+
+    // BIG radius to almost fill screen
+    const radiusX = window.innerWidth / 2 - 20; // 20px margin from edge
+    const radiusY = window.innerHeight / 2 - 20;
+
     function animate() {
         angle += 0.02; // rotation speed
 
-        // HUGE radius to cover almost entire screen
-        const radiusX = window.innerWidth / 2 - noBtn.offsetWidth - 10;
-        const radiusY = window.innerHeight / 2 - noBtn.offsetHeight - 10;
-
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-
+        // x and y positions
         const x = centerX + radiusX * Math.cos(angle) - noBtn.offsetWidth / 2;
         const y = centerY + radiusY * Math.sin(angle) - noBtn.offsetHeight / 2;
 
