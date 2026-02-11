@@ -1,23 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Be My Valentine 💖</title>
-
+<title>Valentine Proposal 💖</title>
 <style>
 body {
     margin: 0;
     height: 100vh;
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
     overflow: hidden;
     transition: transform 0.1s;
 }
-
 .card {
     background: white;
     padding: 50px;
@@ -25,12 +23,7 @@ body {
     text-align: center;
     box-shadow: 0 15px 40px rgba(0,0,0,0.2);
 }
-
-h1 {
-    color: #ff4d6d;
-    margin-bottom: 30px;
-}
-
+h1 { color: #ff4d6d; margin-bottom: 30px; }
 button {
     padding: 14px 28px;
     font-size: 18px;
@@ -40,67 +33,40 @@ button {
     margin: 10px;
     transition: all 0.3s ease;
 }
-
-#yesBtn {
-    background: #ff4d6d;
-    color: white;
-}
-
-#noBtn {
-    background: #ccc;
-}
-
-.bigYes {
-    background: #ff4d6d;
-    color: white;
-    font-size: 28px;
-    padding: 25px 50px;
-    transform: scale(1.5);
-}
-
+#yesBtn { background: #ff4d6d; color: white; }
+#noBtn { background: #ccc; }
+.bigYes { background: #ff4d6d; color: white; font-size: 28px; padding: 25px 50px; transform: scale(1.5); }
+.heart { position: fixed; font-size: 20px; animation: floatUp 4s linear forwards; }
+@keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-100vh); opacity: 0; } }
 @keyframes shake {
-    0% { transform: translate(0px, 0px); }
-    25% { transform: translate(5px, -5px); }
-    50% { transform: translate(-5px, 5px); }
-    75% { transform: translate(5px, 5px); }
-    100% { transform: translate(0px, 0px); }
+    0% { transform: translate(0,0); }
+    25% { transform: translate(5px,-5px); }
+    50% { transform: translate(-5px,5px); }
+    75% { transform: translate(5px,5px); }
+    100% { transform: translate(0,0); }
 }
-
-.shake {
-    animation: shake 0.3s;
-}
-
-.heart {
-    position: fixed;
-    font-size: 20px;
-    animation: floatUp 4s linear forwards;
-}
-
-@keyframes floatUp {
-    0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-100vh); opacity: 0; }
-}
+.shake { animation: shake 0.3s; }
 </style>
 </head>
-
 <body>
 
 <div class="card">
-    <h1>Will You Be My Valentine? 💖</h1>
+    <h1 id="question">Will You Be My Valentine? 💖</h1>
     <button id="yesBtn">Yes 💘</button>
     <button id="noBtn">No 🙈</button>
 </div>
 
-<audio id="loveMusic" src="https://www.soundjay.com/buttons/sounds/button-09.mp3"></audio>
-
 <script>
-const noBtn = document.getElementById("noBtn");
-const yesBtn = document.getElementById("yesBtn");
 let noClicks = 0;
+const noBtn = document.getElementById('noBtn');
+const yesBtn = document.getElementById('yesBtn');
+const question = document.getElementById('question');
 
-// Add event listeners
-noBtn.addEventListener("click", handleNo);
-yesBtn.addEventListener("click", sayYes);
+// Add Yes click
+yesBtn.addEventListener('click', sayYes);
+
+// Add No click
+noBtn.addEventListener('click', handleNo);
 
 function handleNo() {
     noClicks++;
@@ -109,40 +75,34 @@ function handleNo() {
     noBtn.innerText = "You think you can press No? 😏";
 
     // Shrink No button
-    let scale = 1 - (noClicks * 0.1);
-    if (scale < 0.4) scale = 0.4;
-    noBtn.style.transform = `scale(${scale})`;
+    noBtn.style.transform = `scale(${Math.max(1 - noClicks*0.1, 0.4)})`;
 
     // Grow Yes button
-    let yesScale = 1 + (noClicks * 0.2);
-    yesBtn.style.transform = `scale(${yesScale})`;
+    yesBtn.style.transform = `scale(${1 + noClicks*0.2})`;
 
     // Teleport No button
-    noBtn.style.position = "fixed";
-    noBtn.style.left = Math.random() * (window.innerWidth - noBtn.offsetWidth) + "px";
-    noBtn.style.top = Math.random() * (window.innerHeight - noBtn.offsetHeight) + "px";
+    noBtn.style.position = 'fixed';
+    noBtn.style.left = Math.random() * (window.innerWidth - noBtn.offsetWidth) + 'px';
+    noBtn.style.top = Math.random() * (window.innerHeight - noBtn.offsetHeight) + 'px';
 
     // Shake screen on second click
-    if (noClicks === 2) {
-        document.body.classList.add("shake");
-        setTimeout(() => {
-            document.body.classList.remove("shake");
-        }, 300);
+    if(noClicks === 2) {
+        document.body.classList.add('shake');
+        setTimeout(() => document.body.classList.remove('shake'), 300);
     }
 
-    // On third click turn No into BIG Yes
-    if (noClicks >= 3) {
+    // On third click, turn No into BIG YES
+    if(noClicks >= 3){
         noBtn.innerText = "YES 💘";
-        noBtn.className = "bigYes";
-        noBtn.style.position = "static";
-        noBtn.removeEventListener("click", handleNo);
-        noBtn.addEventListener("click", sayYes);
+        noBtn.className = 'bigYes';
+        noBtn.style.position = 'static';
+        noBtn.removeEventListener('click', handleNo);
+        noBtn.addEventListener('click', sayYes);
     }
 }
 
 function sayYes() {
-    document.getElementById("loveMusic").play();
-
+    // Replace entire body content
     document.body.innerHTML = `
         <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:linear-gradient(135deg,#ff9a9e,#fad0c4);font-family:Arial;text-align:center;overflow:hidden;">
             <div>
@@ -151,28 +111,30 @@ function sayYes() {
             </div>
         </div>
     `;
+
+    // Hearts + confetti
     setInterval(makeHeart, 200);
     setInterval(makeConfetti, 150);
 }
 
 function makeHeart() {
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerText = "💖";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.bottom = "0px";
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.innerText = '💖';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.bottom = '0px';
     document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 4000);
+    setTimeout(()=> heart.remove(), 4000);
 }
 
 function makeConfetti() {
-    const confetti = document.createElement("div");
-    confetti.className = "heart";
-    confetti.innerText = "✨";
-    confetti.style.left = Math.random() * 100 + "vw";
-    confetti.style.bottom = "0px";
+    const confetti = document.createElement('div');
+    confetti.className = 'heart';
+    confetti.innerText = '✨';
+    confetti.style.left = Math.random() * 100 + 'vw';
+    confetti.style.bottom = '0px';
     document.body.appendChild(confetti);
-    setTimeout(() => confetti.remove(), 3000);
+    setTimeout(()=> confetti.remove(), 3000);
 }
 </script>
 
