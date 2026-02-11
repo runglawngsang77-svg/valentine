@@ -14,7 +14,6 @@ body {
     align-items: center;
     background: linear-gradient(135deg, #ff9a9e, #fad0c4);
     overflow: hidden;
-    transition: transform 0.1s;
 }
 .card {
     background: white;
@@ -36,105 +35,61 @@ button {
 #yesBtn { background: #ff4d6d; color: white; }
 #noBtn { background: #ccc; }
 .bigYes { background: #ff4d6d; color: white; font-size: 28px; padding: 25px 50px; transform: scale(1.5); }
-.heart { position: fixed; font-size: 20px; animation: floatUp 4s linear forwards; }
-@keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-100vh); opacity: 0; } }
-@keyframes shake {
-    0% { transform: translate(0,0); }
-    25% { transform: translate(5px,-5px); }
-    50% { transform: translate(-5px,5px); }
-    75% { transform: translate(5px,5px); }
-    100% { transform: translate(0,0); }
-}
-.shake { animation: shake 0.3s; }
 </style>
 </head>
 <body>
 
 <div class="card">
-    <h1 id="question">Will You Be My Valentine My Dawt Dawt My Cutie Patootie ? 💖</h1>
+    <h1 id="question">Will You Be My Valentine? 💖</h1>
     <button id="yesBtn">Yes 💘</button>
     <button id="noBtn">No 🙈</button>
 </div>
 
 <script>
-let noClicks = 0;
-const noBtn = document.getElementById('noBtn');
 const yesBtn = document.getElementById('yesBtn');
-const question = document.getElementById('question');
+const noBtn = document.getElementById('noBtn');
 
-// Add Yes click
-yesBtn.addEventListener('click', sayYes);
+let circleAnimId;
+let angle = 0;
+const radius = 150;
 
-// Add No click
-noBtn.addEventListener('click', handleNo);
-
-function handleNo() {
-    noClicks++;
-
-    // Change text
-    noBtn.innerText = "Click me to row your boat 360 😏";
-
-    // Shrink No button
-    noBtn.style.transform = `scale(${Math.max(1 - noClicks*0.1, 0.4)})`;
-
-    // Grow Yes button
-    yesBtn.style.transform = `scale(${1 + noClicks*0.2})`;
-
-    // Teleport No button
-    noBtn.style.position = 'fixed';
-    noBtn.style.left = Math.random() * (window.innerWidth - noBtn.offsetWidth) + 'px';
-    noBtn.style.top = Math.random() * (window.innerHeight - noBtn.offsetHeight) + 'px';
-
-    // Shake screen on second click
-    if(noClicks === 2) {
-        document.body.classList.add('shake');
-        setTimeout(() => document.body.classList.remove('shake'), 300);
-    }
-
-    // On third click, turn No into BIG YES
-    if(noClicks >= 3){
-        noBtn.innerText = "YES 💘";
-        noBtn.className = 'bigYes';
-        noBtn.style.position = 'static';
-        noBtn.removeEventListener('click', handleNo);
-        noBtn.addEventListener('click', sayYes);
-    }
-}
-
-function sayYes() {
-    // Replace entire body content
+// Yes button click
+yesBtn.addEventListener('click', () => {
     document.body.innerHTML = `
-        <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:linear-gradient(135deg,#ff9a9e,#fad0c4);font-family:Arial;text-align:center;overflow:hidden;">
+        <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:linear-gradient(135deg,#ff9a9e,#fad0c4);font-family:Arial;text-align:center;">
             <div>
                 <h1 style="color:#ff4d6d;font-size:42px;">She Said YESSSS 💖🥰</h1>
-                <p style="font-size:22px;">Best day ever KAN DAWT TUK KA DODO 😌💘</p>
+                <p style="font-size:22px;">Best day ever 😌💘</p>
             </div>
         </div>
     `;
+});
 
-    // Hearts + confetti
-    setInterval(makeHeart, 200);
-    setInterval(makeConfetti, 150);
-}
+// No button click
+noBtn.addEventListener('click', () => {
+    noBtn.innerText = "Click me to row your boat 360 😏";
+    if (!circleAnimId) startCircularMotion();
+});
 
-function makeHeart() {
-    const heart = document.createElement('div');
-    heart.className = 'heart';
-    heart.innerText = '💖';
-    heart.style.left = Math.random() * 100 + 'vw';
-    heart.style.bottom = '0px';
-    document.body.appendChild(heart);
-    setTimeout(()=> heart.remove(), 4000);
-}
+function startCircularMotion() {
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
 
-function makeConfetti() {
-    const confetti = document.createElement('div');
-    confetti.className = 'heart';
-    confetti.innerText = '✨';
-    confetti.style.left = Math.random() * 100 + 'vw';
-    confetti.style.bottom = '0px';
-    document.body.appendChild(confetti);
-    setTimeout(()=> confetti.remove(), 3000);
+    noBtn.style.position = 'fixed';
+    noBtn.style.zIndex = 999;
+
+    function animate() {
+        angle += 0.05; // speed of rotation
+        const x = centerX + radius * Math.cos(angle) - noBtn.offsetWidth / 2;
+        const y = centerY + radius * Math.sin(angle) - noBtn.offsetHeight / 2;
+
+        noBtn.style.left = `${x}px`;
+        noBtn.style.top = `${y}px`;
+
+        circleAnimId = requestAnimationFrame(animate);
+    }
+
+    animate();
 }
 </script>
 
