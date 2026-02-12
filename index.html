@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valentine Proposal 💖</title>
+
 <style>
 body {
     margin: 0;
@@ -18,24 +19,22 @@ body {
 
 /* Card */
 .card {
-    background: rgba(255,255,255,0.95);
+    background: white;
     padding: 50px;
     border-radius: 25px;
     text-align: center;
-    box-shadow: 0 0 50px rgba(255,77,109,0.8);
-    animation: cardPulse 2s infinite alternate;
-}
-@keyframes cardPulse {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.05); }
+    box-shadow: 0 0 40px rgba(255, 0, 100, 0.5);
 }
 
-/* Text */
-h1 { color: #ff1a75; margin-bottom: 30px; font-size: 2em; }
+/* Title */
+h1 {
+    color: #ff1a75;
+    margin-bottom: 30px;
+}
 
 /* Buttons */
 button {
-    padding: 16px 32px;
+    padding: 15px 30px;
     font-size: 18px;
     border: none;
     border-radius: 50px;
@@ -43,109 +42,84 @@ button {
     margin: 10px;
     transition: all 0.3s ease;
 }
+
+/* Yes button */
 #yesBtn {
     background: #ff1a75;
     color: white;
-    box-shadow: 0 0 30px #ff4da6;
-    animation: yesGlow 1s infinite alternate;
-}
-@keyframes yesGlow {
-    0% { box-shadow: 0 0 20px #ff4da6; transform: scale(1); }
-    100% { box-shadow: 0 0 50px #ff4da6; transform: scale(1.1); }
-}
-#noBtn {
-    background: #ccc;
-    color: #333;
-    position: relative; /* initial relative, will become fixed when moving */
+    box-shadow: 0 0 20px #ff4da6;
 }
 
-/* Floating hearts & sparkles */
-.floating {
-    position: fixed;
-    font-size: 25px;
-    animation: floatUp 5s linear forwards;
-    pointer-events: none;
+#yesBtn:hover {
+    transform: scale(1.1);
 }
-@keyframes floatUp {
-    0% { transform: translateY(0) scale(1); opacity: 1; }
-    100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+
+/* No button */
+#noBtn {
+    background: #ccc;
+}
+
+/* Big Yes style */
+.bigYes {
+    background: #ff1a75 !important;
+    color: white !important;
+    font-size: 28px !important;
+    padding: 25px 50px !important;
+    transform: scale(1.3);
+    box-shadow: 0 0 40px #ff4da6;
 }
 </style>
 </head>
+
 <body>
 
 <div class="card">
-    <h1>Will You Be My Valentine My Dawt Dawt My Cutie Patootie? 💖</h1>
+    <h1>Will You Be My Valentine? 💖</h1>
     <button id="yesBtn">Yes 💘</button>
     <button id="noBtn">No 🙈</button>
 </div>
 
 <script>
-const yesBtn = document.getElementById('yesBtn');
-const noBtn = document.getElementById('noBtn');
-let angle = 0;
-let animating = false;
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
 
-// Floating hearts continuously
-setInterval(() => {
-    const heart = document.createElement('div');
-    heart.className = 'floating';
-    heart.innerText = Math.random() > 0.5 ? '💖' : '✨';
-    heart.style.left = Math.random() * window.innerWidth + 'px';
-    heart.style.fontSize = (20 + Math.random() * 30) + 'px';
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 5000);
-}, 200);
+let noClicks = 0;
 
-// Yes button click → full-screen hearts & confetti
-yesBtn.addEventListener('click', () => {
+// YES button
+yesBtn.addEventListener("click", celebrate);
+
+// NO button logic
+noBtn.addEventListener("click", () => {
+    noClicks++;
+
+    if (noClicks === 1) {
+        noBtn.innerText = "Click this to row your boat 360 😏";
+    }
+    else if (noClicks === 2) {
+        noBtn.innerText = "Sorry no 360 row 😌 but answer the question";
+    }
+    else if (noClicks >= 3) {
+        noBtn.innerText = "YES 💘";
+        noBtn.classList.add("bigYes");
+
+        // Remove old click behavior
+        noBtn.replaceWith(noBtn.cloneNode(true));
+
+        const newNoBtn = document.querySelector(".bigYes");
+        newNoBtn.addEventListener("click", celebrate);
+    }
+});
+
+// Celebration screen
+function celebrate() {
     document.body.innerHTML = `
-        <div style="position:relative;width:100vw;height:100vh;background:#ffb6c1;overflow:hidden;">
-            <h1 style="text-align:center;margin-top:40vh;font-size:3em;color:#ff1a75;">YAYYY SHE SAID YES KAN DAWT TUK KA DODO 💖🥰</h1>
+        <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#ffb6c1;font-family:Arial;text-align:center;">
+            <div>
+                <h1 style="color:#ff1a75;font-size:3em;">She Said YESSSS 💖🥰</h1>
+                <p style="font-size:22px;">Best day ever 😌💘</p>
+            </div>
         </div>
     `;
-    // Big heart confetti
-    setInterval(() => {
-        const c = document.createElement('div');
-        c.className = 'floating';
-        c.innerText = Math.random() > 0.5 ? '💖' : '✨';
-        c.style.left = Math.random() * window.innerWidth + 'px';
-        c.style.fontSize = (20 + Math.random() * 50) + 'px';
-        document.body.appendChild(c);
-        setTimeout(() => c.remove(), 5000);
-    }, 100);
-});
-
-// No button click → start circular motion
-noBtn.addEventListener('click', () => {
-    noBtn.innerText = "ROW YOUR BOAT 360 DEGREES😏";
-    if (!animating) {
-        animating = true;
-        noBtn.style.position = 'fixed';
-        noBtn.style.zIndex = 999;
-        startCircularMotion();
-    }
-});
-
-// Circular motion that stays inside viewport
-function startCircularMotion() {
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-
-    // Reduce radius by button size + margin to stay fully inside
-    const radiusX = (window.innerWidth / 2) - (noBtn.offsetWidth / 2) - 20;
-    const radiusY = (window.innerHeight / 2) - (noBtn.offsetHeight / 2) - 20;
-
-    function animate() {
-        angle += 0.02;
-        const x = centerX + radiusX * Math.cos(angle) - noBtn.offsetWidth / 2;
-        const y = centerY + radiusY * Math.sin(angle) - noBtn.offsetHeight / 2;
-        noBtn.style.left = `${x}px`;
-        noBtn.style.top = `${y}px`;
-        noBtn.style.transform = `rotate(${angle * 50}deg)`; // spinning effect
-        requestAnimationFrame(animate);
-    }
-    requestAnimationFrame(animate);
 }
 </script>
 
